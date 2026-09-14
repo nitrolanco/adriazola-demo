@@ -1,0 +1,52 @@
+---
+import { contact } from '../config/site';
+import { buildWhatsAppUrl } from '../lib/contact';
+
+const whatsappUrl = buildWhatsAppUrl(contact.whatsappNumber, {
+  message:
+    'Hola, quisiera consultar por un servicio de Adriazola Electricidad.',
+  email: '',
+  phone: '',
+});
+---
+
+<section class="hero" aria-labelledby="titulo">
+  <div>
+    <p class="eyebrow">Particulares y pymes · Aysén</p>
+    <h1 id="titulo">
+      Soluciones eléctricas para tu hogar <em>y tu negocio.</em>
+    </h1>
+    <p class="intro">
+      Proyectos, instalaciones y mantenimiento eléctrico. Equipos y materiales
+      para dar el siguiente paso.
+    </p>
+    <div class="actions">
+      <a
+        class="cta"
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Consultar por WhatsApp <span aria-hidden="true">↗</span>
+      </a>
+      <a class="secondary" href="#servicios">
+        Ver servicios ↓
+      </a>
+    </div>
+    <p class="coverage">Atendemos toda la región de Aysén</p>
+    <p class="help">
+      Abre WhatsApp en otra pestaña para revisar y enviar tu mensaje.
+    </p>
+  </div>
+  <figure class="hero-photo">
+    <img
+      src="/images/instalacion-solar.jpg"
+      width="780"
+      height="439"
+      alt="Instalación de paneles solares sobre una cubierta"
+    />
+    <figcaption>
+      Trabajo en terreno · Fotografía del material aportado
+    </figcaption>
+  </figure>
+</section>

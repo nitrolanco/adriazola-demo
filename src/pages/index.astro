@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Services from '../components/Services.astro';
+import Projects from '../components/Projects.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { site } from '../config/site';
+---
+
+<BaseLayout title={site.title} description={site.description}>
+  <a class="skip-link" href="#inicio">
+    Saltar al contenido
+  </a>
+  <header>
+    <div class="review">
+      Versión local · Contacto temporal · Formulario por correo pendiente
+    </div>
+    <div class="wrap nav">
+      <a
+        class="brand"
+        href="#inicio"
+        aria-label="Adriazola Electricidad, inicio"
+      >
+        <strong>ADRIAZOLA</strong>
+        <span>ELECTRICIDAD</span>
+      </a>
+      <nav aria-label="Principal">
+        <a href="#servicios">Servicios</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+    </div>
+  </header>
+  <main id="inicio" class="wrap" tabindex="-1">
+    <Hero />
+    <Services />
+    <Projects />
+    <ContactForm />
+  </main>
+  <footer class="wrap">
+    <span>Adriazola Electricidad</span>
+    <span>Región de Aysén · Versión local 2026</span>
+  </footer>
+</BaseLayout>

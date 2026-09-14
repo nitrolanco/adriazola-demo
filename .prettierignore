@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+.npm-cache/
+sources/
+coverage/
+playwright-report/
+test-results/
+package-lock.json
+AGENTS.md

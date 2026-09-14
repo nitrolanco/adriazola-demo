@@ -1,0 +1,172 @@
+<section class="section" id="contacto" aria-labelledby="contacto-titulo">
+  <div class="contact">
+    <div>
+      <p class="eyebrow">Conversemos</p>
+      <h2 id="contacto-titulo">
+        Cuéntanos
+        <br />
+        qué necesitas.
+      </h2>
+      <p>
+        Escríbenos por WhatsApp o prepara una consulta por correo. Atendemos a
+        particulares y pymes en toda la región de Aysén.
+      </p>
+    </div>
+    <form id="contact-form" aria-labelledby="contacto-titulo" novalidate>
+      <label for="consulta">Tu consulta</label>
+      <textarea
+        id="consulta"
+        name="message"
+        aria-describedby="consulta-help message-error"
+        placeholder="Necesito ayuda con…"
+        required
+      ></textarea>
+      <p class="help" id="consulta-help">
+        Cuéntanos qué necesitas y en qué localidad.
+      </p>
+      <p class="field-error" id="message-error" hidden></p>
+      <button
+        type="submit"
+        class="cta"
+        name="channel"
+        value="whatsapp"
+        disabled
+      >
+        Continuar en WhatsApp <span aria-hidden="true">↗</span>
+      </button>
+      <details>
+        <summary>Prefiero enviar por correo</summary>
+        <p class="help">
+          El envío por correo todavía no está disponible. Por ahora puedes
+          contactarnos por WhatsApp.
+        </p>
+        <p class="help" id="contacto-help">
+          Indica al menos un email o un teléfono para que podamos responderte.
+          Puedes completar ambos.
+        </p>
+        <label for="correo">Email (opcional si indicas teléfono)</label>
+        <input
+          id="correo"
+          name="email"
+          type="email"
+          autocomplete="email"
+          aria-describedby="contacto-help email-error"
+          placeholder="tu@email.cl"
+        />
+        <p class="field-error" id="email-error" hidden></p>
+        <label for="telefono">Teléfono (opcional si indicas email)</label>
+        <input
+          id="telefono"
+          name="phone"
+          type="tel"
+          autocomplete="tel"
+          aria-describedby="contacto-help"
+          placeholder="+56 9 …"
+        />
+        <button type="submit" class="cta" name="channel" value="email" disabled>
+          Enviar consulta por correo
+        </button>
+      </details>
+      <p class="notice" id="contact-notice" role="status" aria-live="polite">
+        WhatsApp abrirá tu consulta para que la revises y la envíes.
+      </p>
+      <a
+        id="whatsapp-fallback"
+        target="_blank"
+        rel="noopener noreferrer"
+        hidden
+      >
+        Si WhatsApp no se abrió, abre tu consulta aquí
+      </a>
+      <noscript>
+        <p>
+          Activa JavaScript para preparar tu consulta, o usa el enlace directo a
+          WhatsApp al inicio de la página.
+        </p>
+      </noscript>
+    </form>
+  </div>
+</section>
+
+<script>
+  import { buildWhatsAppUrl, validateContact } from '../lib/contact';
+  import { contact } from '../config/site';
+
+  const form = document.querySelector<HTMLFormElement>('#contact-form');
+  if (form) {
+    const message = form.querySelector<HTMLTextAreaElement>('#consulta')!;
+    const email = form.querySelector<HTMLInputElement>('#correo')!;
+    const phone = form.querySelector<HTMLInputElement>('#telefono')!;
+    const notice = form.querySelector<HTMLElement>('#contact-notice')!;
+    const fallback =
+      form.querySelector<HTMLAnchorElement>('#whatsapp-fallback')!;
+    const fields = { message, email, phone };
+
+    const clearErrors = () => {
+      for (const field of Object.values(fields))
+        field.removeAttribute('aria-invalid');
+      for (const error of form.querySelectorAll<HTMLElement>('.field-error')) {
+        error.hidden = true;
+        error.textContent = '';
+      }
+    };
+
+    form.addEventListener('input', () => {
+      clearErrors();
+      fallback.hidden = true;
+      fallback.removeAttribute('href');
+      notice.textContent =
+        'WhatsApp abrirá tu consulta para que la revises y la envíes.';
+    });
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      clearErrors();
+      fallback.hidden = true;
+      fallback.removeAttribute('href');
+      const submitter = event.submitter;
+      const channel =
+        submitter instanceof HTMLButtonElement && submitter.value === 'email'
+          ? 'email'
+          : 'whatsapp';
+      const error = validateContact(
+        { message: message.value, email: email.value, phone: phone.value },
+        channel,
+      );
+      if (error) {
+        const field = fields[error.field];
+        const errorText = form.querySelector<HTMLElement>(
+          `#${error.field}-error`,
+        );
+        field.setAttribute('aria-invalid', 'true');
+        if (errorText) {
+          errorText.hidden = false;
+          errorText.textContent = error.message;
+        }
+        notice.textContent = error.message;
+        field.focus();
+        return;
+      }
+      if (channel === 'whatsapp') {
+        const url = buildWhatsAppUrl(contact.whatsappNumber, {
+          message: message.value,
+          email: email.value,
+          phone: phone.value,
+        });
+        fallback.href = url;
+        fallback.hidden = false;
+        window.open(url, '_blank', 'noopener,noreferrer');
+        notice.textContent =
+          'Se solicitó abrir WhatsApp. Revisa tu consulta y pulsa enviar allí; todavía no se ha enviado el mensaje.';
+        return;
+      }
+      notice.textContent =
+        'Consulta validada. El envío por correo aún no está conectado; no se ha enviado ningún dato.';
+    });
+
+    for (const button of form.querySelectorAll<HTMLButtonElement>(
+      'button[type="submit"]',
+    ))
+      button.disabled = false;
+  }
+</script>
