@@ -1,0 +1,58 @@
+name: Validate and deploy demo
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Read Pages configuration
+        id: pages
+        uses: actions/configure-pages@v5
+      - run: npm ci
+      - name: Install test browser
+        run: npx playwright install --with-deps chromium
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: '0'
+      - name: Validate the actual public path
+        run: npm run validate
+        env:
+          ASTRO_TELEMETRY_DISABLED: '1'
+          SITE_URL: ${{ steps.pages.outputs.origin }}
+          SITE_BASE_PATH: ${{ steps.pages.outputs.base_path }}/
+      - name: Exclude obsolete prototype from deployment
+        run: rm -rf -- dist/propuesta
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish demo
+        id: deployment
+        uses: actions/deploy-pages@v4

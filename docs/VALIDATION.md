@@ -128,3 +128,32 @@ reservado, incluyendo tanto 4321 como 4322. Se verificó mediante escucha TCP
 temporal que 3000 y 3100 están disponibles. Astro pasa a 3000 y el preview de
 Playwright a 3100. Pendiente repetir npm run validate y comprobar npm run dev
 en la terminal del usuario. No es necesario reinstalar dependencias por este error.
+
+## 2026-09-15 — Preparación de GitHub Pages
+
+Se verifica el commit inicial `39f406c` en `master`, sin remoto configurado.
+Se adapta la base del sitio y de los E2E a la subruta de Pages y se agrega
+verificación de carga de las tres imágenes. El workflow valida antes de publicar.
+
+Con Node 24.19.0: lint y formato correctos; Astro check termina con cero errores,
+advertencias e hints. `npm run validate` se detiene al cargar Vitest por
+`spawn EPERM` en un subproceso de Vite. No se ejecutaron build ni E2E de este
+incremento. Las pruebas anteriores no sustituyen esta validación pendiente.
+
+La conexión CLI a GitHub falla por el proxy restringido de esta sesión; no se
+puede confirmar la autenticación. No se realizó commit, push ni despliegue.
+Continuar desde una terminal propia según [GITHUB_PAGES.md](GITHUB_PAGES.md),
+sin desactivar pruebas ni reinstalar dependencias por este bloqueo de permisos.
+
+### Confirmación posterior desde PowerShell del usuario
+
+La salida compartida confirma `npm run validate` completo con Node 24.19.0:
+lint y formato pasan; Astro check informa cero errores, advertencias e hints;
+15 pruebas unitarias pasan; build estático correcto; 14 E2E pasan en 16 segundos,
+incluyendo escritorio, móvil, axe, imágenes y preparación del enlace de WhatsApp.
+Esta ejecución valida la ruta local `/`; la subruta de Pages se comprobará en
+Actions antes del despliegue. No se ha verificado todavía una URL pública.
+
+También se confirma autenticación de GitHub CLI como `nitrolanco` desde la
+terminal del usuario. Esto no elimina las restricciones de red de la sesión del
+agente. El remoto sigue sin configurar al revisar el repositorio tras esta salida.

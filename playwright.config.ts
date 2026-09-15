@@ -1,7 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
+import process from 'node:process';
 
 const port = 3100;
-const baseURL = `http://127.0.0.1:${port}`;
+const basePath = (process.env.SITE_BASE_PATH || '/').replace(/\/$/, '') + '/';
+const baseURL = `http://127.0.0.1:${port}${basePath}`;
 
 export default defineConfig({
   testDir: './tests/e2e',

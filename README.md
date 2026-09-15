@@ -23,8 +23,9 @@ Abrir http://localhost:3000. Para comprobar la base: npm run validate.
 - [Decisiones](docs/DECISIONS.md)
 - [Resultados de validación](docs/VALIDATION.md)
 - [Guía para mostrar esta versión al cliente](docs/CLIENT_REVIEW.md)
+- [Publicar la demo en GitHub Pages](docs/GITHUB_PAGES.md)
 
-Incremento local de etapa 5 validado: formato, lint y tipos pasan; la salida de la
-PowerShell del usuario confirma 12 pruebas unitarias, build y 12 E2E correctos.
-La conexión posterior de WhatsApp requiere revalidación. Ver el registro de validación para evidencia
-y limitaciones del entorno.
+Validación local confirmada por la salida de PowerShell del usuario el 2026-09-15:
+formato, lint, tipos, 15 pruebas unitarias, build y 14 E2E correctos, incluyendo
+WhatsApp. La subruta de GitHub Pages y el despliegue remoto siguen pendientes de
+validación en Actions. Ver el registro de validación para evidencia y limitaciones.

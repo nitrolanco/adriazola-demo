@@ -14,7 +14,7 @@ test('la home carga y se puede recargar sin errores', async ({ page }) => {
     }
   });
 
-  const response = await page.goto('/');
+  const response = await page.goto('./');
   expect(response?.status()).toBe(200);
   await expect(page).toHaveTitle(
     'Adriazola Electricidad | Servicios eléctricos en Aysén',
@@ -22,6 +22,16 @@ test('la home carga y se puede recargar sin errores', async ({ page }) => {
   await expect(page.getByRole('main')).toBeVisible();
   await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  const photos = page.getByRole('img');
+  await expect(photos).toHaveCount(3);
+  for (const photo of await photos.all()) {
+    await photo.scrollIntoViewIfNeeded();
+    await expect
+      .poll(() =>
+        photo.evaluate((element) => (element as HTMLImageElement).naturalWidth),
+      )
+      .toBeGreaterThan(0);
+  }
 
   const reload = await page.reload();
   expect(reload?.status()).toBe(200);
@@ -30,7 +40,7 @@ test('la home carga y se puede recargar sin errores', async ({ page }) => {
 });
 
 test('la home no presenta infracciones axe detectables', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('./');
   const results = await new AxeBuilder({ page })
     .withTags([
       'wcag2a',
@@ -45,7 +55,7 @@ test('la home no presenta infracciones axe detectables', async ({ page }) => {
 });
 
 test('el contenido cabe en el viewport, incluso a 320 px', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('./');
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= window.innerWidth,

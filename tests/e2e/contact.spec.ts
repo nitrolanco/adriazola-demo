@@ -9,7 +9,7 @@ test.beforeEach(async ({ page }) => {
       body: '<title>WhatsApp interceptado para pruebas</title>',
     }),
   );
-  await page.goto('/');
+  await page.goto('./');
   await page.getByRole('link', { name: 'Contacto', exact: true }).click();
   await expect(page).toHaveURL(/#contacto$/);
 });

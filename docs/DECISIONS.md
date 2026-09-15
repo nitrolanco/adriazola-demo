@@ -35,6 +35,16 @@ Desarrollo en 3000 y preview E2E en 3100. Windows reserva actualmente el interva
 nuevos puertos permiten escucha local. La URL y el comando E2E comparten una única
 constante para evitar desajustes. No modificar reservas del sistema operativo.
 
+## D006 — Demo pública en GitHub Pages
+
+El usuario autoriza un repositorio público `adriazola-demo` para revisión con el
+cliente. Esta etapa amplía D004: se incorpora GitHub Actions solo para validar y
+publicar la demo estática, sin backend, dominio ni Netlify. Se mantiene `noindex`
+y el aviso de contacto temporal. Pages proporciona origen y subruta al build;
+los E2E prueban esa misma subruta e incluyen la carga de imágenes. La maqueta
+antigua queda fuera del artefacto publicado. Procedimiento único en
+[GITHUB_PAGES.md](GITHUB_PAGES.md).
+
 ## Referencias técnicas
 
 - [Instalación y requisitos de Astro](https://docs.astro.build/en/install-and-setup/)
