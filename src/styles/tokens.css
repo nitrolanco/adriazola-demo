@@ -1,9 +1,14 @@
 :root {
-  --ink: #172f3d;
-  --accent: #17675c;
-  --paper: #f6f7f3;
-  --muted: #52636b;
-  --line: #d7dfda;
-  --focus: #c27624;
+  --ink: #060f54;
+  --brand-cyan: #0095d8;
+  --accent: #006a9b;
+  --accent-hover: #00527a;
+  --accent-soft: #d9f2ff;
+  --paper: #faf9f6;
+  --surface: #ffffff;
+  --muted: #495970;
+  --line: #d4dde5;
+  --shadow: 0 12px 32px rgb(6 15 84 / 7%);
+  --focus: var(--brand-cyan);
   --font-body: Arial, Helvetica, sans-serif;
 }

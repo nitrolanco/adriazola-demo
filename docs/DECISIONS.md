@@ -45,6 +45,37 @@ los E2E prueban esa misma subruta e incluyen la carga de imágenes. La maqueta
 antigua queda fuera del artefacto publicado. Procedimiento único en
 [GITHUB_PAGES.md](GITHUB_PAGES.md).
 
+## D007 — Identidad y contactos, 2026-09-17
+
+En `codex/renovacion-identidad` se conserva la composición y se incorporan los
+logos entregados por el usuario. El 2026-09-18 se recibe `horizontal.svg` con las
+letras convertidas a trazados. La copia web conserva los cinco trazados visibles
+y sus transformaciones relativas, elimina fuentes externas y texto vacío, y
+ajusta el viewBox al logo. Ya no necesita recorte CSS ni fuentes instaladas.
+Queda pendiente la aprobación visual de la tipografía de esta exportación.
+El pie y favicon usan `Solo A.svg`, conservando sus cuatro trazados y colores,
+con viewBox ajustado y sin el fondo blanco del lienzo. `prefinal.svg` queda como
+referencia, sin uso en la página. Los archivos originales externos no se modifican.
+
+La paleta toma azul marino `#060f54` y cian `#0095d8` del SVG; textos destacados
+y botones usan un azul más oscuro `#006a9b` para mantener contraste. Fondos claros
+y composición existentes se conservan. WhatsApp y llamadas se configuran por
+separado en `src/config/site.ts`; el correo continúa como placeholder, sin envío.
+El despliegue queda limitado a `master`, incluso en ejecuciones manuales.
+
+## D008 — Legibilidad y sexto servicio
+
+Se agrega Servicios informáticos al final, identificado como complemento de un
+colaborador, sin cambiar el foco eléctrico del hero ni agregar otra llamada a
+la acción. Incluye automatización, web, datos, ERP y revisión de ciberseguridad,
+sin prometer certificaciones ni alcances de auditoría no confirmados.
+
+Se mantienen los colores del logo con fondo marfil suave, superficies blancas,
+texto principal de 18 px y mayor tamaño en escritorio. Enlaces principales y
+botones tienen áreas de pulsación amplias; servicios en tarjetas discretas y
+transiciones CSS cortas, desactivadas cuando se prefiere movimiento reducido.
+Sin librerías, fuentes remotas, carruseles ni JavaScript adicional.
+
 ## Referencias técnicas
 
 - [Instalación y requisitos de Astro](https://docs.astro.build/en/install-and-setup/)

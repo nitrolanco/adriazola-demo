@@ -5,6 +5,8 @@ export const site = {
 };
 
 export const contact = {
-  whatsappNumber: '56921857885',
+  whatsappNumber: '56979881579',
+  phoneNumber: '+56988166792',
+  phoneLabel: '+56 9 8816 6792',
   emailRecipient: 'reddataspa@gmail.com',
 };

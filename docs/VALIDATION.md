@@ -157,3 +157,28 @@ Actions antes del despliegue. No se ha verificado todavía una URL pública.
 También se confirma autenticación de GitHub CLI como `nitrolanco` desde la
 terminal del usuario. Esto no elimina las restricciones de red de la sesión del
 agente. El remoto sigue sin configurar al revisar el repositorio tras esta salida.
+
+## 2026-09-17 — Renovación de identidad
+
+En `codex/renovacion-identidad`, lint, formato y Astro check pasan (cero errores,
+advertencias e hints). Vitest vuelve a detenerse al cargar la configuración por
+`spawn EPERM` del entorno. Build y E2E de este incremento no se ejecutaron.
+El intento de levantar desarrollo termina por timeout; localhost rechaza la
+conexión, por lo que queda pendiente revisar visualmente logos y responsive.
+
+Se actualizaron E2E para comprobar el nuevo WhatsApp, el enlace independiente de
+llamadas y la carga del logo, sin contar el logo como una fotografía de proyecto.
+Repetir `npm run validate` con Node 24.19.0 en la terminal del usuario y revisar
+`npm run dev` antes de aprobar o publicar. No se hizo commit, push ni despliegue.
+
+## 2026-09-18 — Sexto servicio y legibilidad
+
+Formato, lint y Astro check correctos (cero errores, advertencias e hints).
+`validate` se detiene de nuevo al cargar Vitest por `spawn EPERM`; build y E2E
+pendientes para este incremento. Se añade un E2E para el sexto servicio, su
+posición final y áreas de pulsación a 320, 390 y 1280 px.
+
+Revisión del servidor local activo mediante navegador: sexto servicio presente,
+tarjetas verificadas visualmente a 1280 px y formulario a 320 px. Ancho del
+documento sin desbordamiento en ambos tamaños. Esto no sustituye las pruebas
+automatizadas de accesibilidad pendientes. Sin publicación ni nuevas dependencias.

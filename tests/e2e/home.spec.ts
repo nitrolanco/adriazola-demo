@@ -22,7 +22,20 @@ test('la home carga y se puede recargar sin errores', async ({ page }) => {
   await expect(page.getByRole('main')).toBeVisible();
   await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-  const photos = page.getByRole('img');
+  const logo = page.getByRole('img', { name: 'Adriazola', exact: true });
+  await expect(logo).toBeVisible();
+  await expect
+    .poll(() =>
+      logo.evaluate((element) => (element as HTMLImageElement).naturalWidth),
+    )
+    .toBeGreaterThan(0);
+  await expect(
+    page.getByRole('link', { name: 'Llamar al +56 9 8816 6792', exact: true }),
+  ).toHaveAttribute('href', 'tel:+56988166792');
+  await expect(
+    page.getByRole('link', { name: 'Consultar por WhatsApp' }),
+  ).toHaveAttribute('href', /^https:\/\/wa\.me\/56979881579\?text=/);
+  const photos = page.locator('main figure img');
   await expect(photos).toHaveCount(3);
   for (const photo of await photos.all()) {
     await photo.scrollIntoViewIfNeeded();
@@ -52,6 +65,40 @@ test('la home no presenta infracciones axe detectables', async ({ page }) => {
     ])
     .analyze();
   expect(results.violations).toEqual([]);
+});
+
+test('los servicios informáticos quedan al final y los enlaces principales son fáciles de pulsar', async ({
+  page,
+}) => {
+  await page.goto('./');
+  const services = page.locator('#servicios article');
+  await expect(services).toHaveCount(6);
+  await expect(services.last().getByRole('heading', { level: 3 })).toHaveText(
+    'Servicios informáticos',
+  );
+  await expect(services.last()).toContainText(
+    'Servicio complementario a través de un colaborador.',
+  );
+  for (const width of [320, 390, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const name of [
+      'Servicios',
+      'Contacto',
+      'Consultar por WhatsApp',
+      'Ver servicios ↓',
+    ]) {
+      const link = page.getByRole('link', { name, exact: true });
+      await expect(link).toBeVisible();
+      const bounds = await link.boundingBox();
+      expect(bounds?.height).toBeGreaterThanOrEqual(44);
+      expect(bounds?.width).toBeGreaterThanOrEqual(44);
+    }
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth,
+      ),
+    ).toBe(true);
+  }
 });
 
 test('el contenido cabe en el viewport, incluso a 320 px', async ({ page }) => {

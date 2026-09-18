@@ -1,3 +1,7 @@
+---
+import { contact } from '../config/site';
+---
+
 <section class="section" id="contacto" aria-labelledby="contacto-titulo">
   <div class="contact">
     <div>
@@ -10,6 +14,14 @@
       <p>
         Escríbenos por WhatsApp o prepara una consulta por correo. Atendemos a
         particulares y pymes en toda la región de Aysén.
+      </p>
+      <p class="phone-contact">
+        ¿Prefieres llamar?
+        <br />
+        <a href={`tel:${contact.phoneNumber}`}>
+          Llamar al {contact.phoneLabel}
+        </a>
+        <span class="help">Número exclusivo para llamadas, no WhatsApp.</span>
       </p>
     </div>
     <form id="contact-form" aria-labelledby="contacto-titulo" novalidate>

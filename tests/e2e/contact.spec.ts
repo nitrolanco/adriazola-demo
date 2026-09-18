@@ -79,7 +79,7 @@ test('WhatsApp prepara el chat y conserva la consulta sin contactar el servicio 
   const popup = await popupPromise;
   await popup.waitForURL('https://wa.me/**');
   const url = new URL(popup.url());
-  expect(url.pathname).toBe('/56921857885');
+  expect(url.pathname).toBe('/56979881579');
   expect(url.searchParams.get('text')).toBe(query);
   await expect(page.getByLabel('Tu consulta', { exact: true })).toHaveValue(
     query,

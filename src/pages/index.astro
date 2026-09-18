@@ -13,7 +13,7 @@ import { site } from '../config/site';
   </a>
   <header>
     <div class="review">
-      Versión de revisión · Contacto temporal · Formulario por correo pendiente
+      Versión de revisión · Formulario por correo pendiente
     </div>
     <div class="wrap nav">
       <a
@@ -21,7 +21,14 @@ import { site } from '../config/site';
         href="#inicio"
         aria-label="Adriazola Electricidad, inicio"
       >
-        <strong>ADRIAZOLA</strong>
+        <div class="brand-image">
+          <img
+            src={`${import.meta.env.BASE_URL}brand/adriazola-horizontal.svg`}
+            width="810"
+            height="360"
+            alt="Adriazola"
+          />
+        </div>
         <span>ELECTRICIDAD</span>
       </a>
       <nav aria-label="Principal">
@@ -37,7 +44,15 @@ import { site } from '../config/site';
     <ContactForm />
   </main>
   <footer class="wrap">
-    <span>Adriazola Electricidad</span>
-    <span>Región de Aysén · Versión local 2026</span>
+    <span class="footer-brand">
+      <img
+        src={`${import.meta.env.BASE_URL}brand/adriazola-a.svg`}
+        width="40"
+        height="40"
+        alt=""
+      />
+      Adriazola Electricidad
+    </span>
+    <span>Región de Aysén · Versión de revisión 2026</span>
   </footer>
 </BaseLayout>
