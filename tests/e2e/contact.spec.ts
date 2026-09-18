@@ -36,11 +36,15 @@ test('correo envía solo teléfono y bloquea envíos duplicados mientras espera'
   try {
     await expect(submit).toBeDisabled();
     await expect(page.getByRole('form')).toHaveAttribute('aria-busy', 'true');
-    await expect(page.getByRole('status')).toContainText('Enviando');
+    await expect(page.getByRole('form').getByRole('status')).toContainText(
+      'Enviando',
+    );
   } finally {
     release();
   }
-  await expect(page.getByRole('status')).toContainText('Consulta recibida');
+  await expect(page.getByRole('form').getByRole('status')).toContainText(
+    'Consulta recibida',
+  );
   await expect(submit).toBeEnabled();
   expect(submissions).toBe(1);
 });
@@ -184,7 +188,7 @@ test('correo no configurado no afirma que se haya enviado', async ({
   await page
     .getByRole('button', { name: 'Enviar consulta por correo' })
     .click();
-  await expect(page.getByRole('status')).toContainText(
+  await expect(page.getByRole('form').getByRole('status')).toContainText(
     'no se ha enviado ningún dato',
   );
 });
@@ -207,7 +211,9 @@ test('un fallo de correo conserva la consulta y permite usar WhatsApp', async ({
   await page
     .getByRole('button', { name: 'Enviar consulta por correo' })
     .click();
-  await expect(page.getByRole('status')).toContainText('límite de envíos');
+  await expect(page.getByRole('form').getByRole('status')).toContainText(
+    'límite de envíos',
+  );
   await expect(page.getByLabel('Tu consulta', { exact: true })).toHaveValue(
     'Consulta de prueba',
   );
