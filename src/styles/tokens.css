@@ -9,6 +9,8 @@
   --muted: #495970;
   --line: #d4dde5;
   --shadow: 0 12px 32px rgb(6 15 84 / 7%);
+  --section-space: clamp(64px, 7vw, 104px);
+  --radius: 4px;
   --focus: var(--brand-cyan);
   --font-body: Arial, Helvetica, sans-serif;
 }

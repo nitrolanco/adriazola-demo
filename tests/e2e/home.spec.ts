@@ -35,8 +35,9 @@ test('la home carga y se puede recargar sin errores', async ({ page }) => {
   await expect(
     page.getByRole('link', { name: 'Consultar por WhatsApp' }),
   ).toHaveAttribute('href', /^https:\/\/wa\.me\/56979881579\?text=/);
-  const photos = page.locator('main figure img');
-  await expect(photos).toHaveCount(3);
+  await expect(page.locator('main figure img')).toHaveCount(16);
+  await expect(page.locator('.carousel-ready')).toHaveCount(2);
+  const photos = page.locator('main figure:visible img');
   for (const photo of await photos.all()) {
     await photo.scrollIntoViewIfNeeded();
     await expect

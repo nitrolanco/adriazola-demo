@@ -9,4 +9,5 @@ export const contact = {
   phoneNumber: '+56988166792',
   phoneLabel: '+56 9 8816 6792',
   emailRecipient: 'reddataspa@gmail.com',
+  formspreeFormId: (import.meta.env.PUBLIC_FORMSPREE_FORM_ID || '').trim(),
 };

@@ -1,30 +1,49 @@
 ---
 import { contact } from '../config/site';
+import { buildWhatsAppUrl } from '../lib/contact';
+
+const directWhatsApp = buildWhatsAppUrl(contact.whatsappNumber, {
+  message:
+    'Hola, quisiera consultar por un servicio de Adriazola Electricidad.',
+  email: '',
+  phone: '',
+});
 ---
 
 <section class="section" id="contacto" aria-labelledby="contacto-titulo">
   <div class="contact">
-    <div>
+    <div class="contact-intro">
       <p class="eyebrow">Conversemos</p>
       <h2 id="contacto-titulo">
-        Cuéntanos
-        <br />
-        qué necesitas.
+        Tu próximo proyecto empieza con una conversación.
       </h2>
-      <p>
-        Escríbenos por WhatsApp o prepara una consulta por correo. Atendemos a
-        particulares y pymes en toda la región de Aysén.
-      </p>
+      <p>Cuéntanos qué necesitas. Te ayudamos a dar el siguiente paso.</p>
+      <a
+        class="cta contact-direct"
+        href={directWhatsApp}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Hablar por WhatsApp <span aria-hidden="true">↗</span>
+      </a>
+      <p class="help">Directo al chat, sin formularios.</p>
       <p class="phone-contact">
         ¿Prefieres llamar?
         <br />
         <a href={`tel:${contact.phoneNumber}`}>
           Llamar al {contact.phoneLabel}
         </a>
-        <span class="help">Número exclusivo para llamadas, no WhatsApp.</span>
+        <span class="help">Solo llamadas.</span>
       </p>
     </div>
-    <form id="contact-form" aria-labelledby="contacto-titulo" novalidate>
+    <form
+      id="contact-form"
+      aria-labelledby="consulta-titulo"
+      data-form-id={contact.formspreeFormId}
+      novalidate
+    >
+      <h3 id="consulta-titulo">Prepara tu consulta</h3>
+      <p class="form-intro">Por WhatsApp o correo, tú eliges.</p>
       <label for="consulta">Tu consulta</label>
       <textarea
         id="consulta"
@@ -48,13 +67,13 @@ import { contact } from '../config/site';
       </button>
       <details>
         <summary>Prefiero enviar por correo</summary>
-        <p class="help">
-          El envío por correo todavía no está disponible. Por ahora puedes
-          contactarnos por WhatsApp.
-        </p>
+        {!contact.formspreeFormId && (
+          <p class="help">
+            Correo no disponible. Contáctanos por WhatsApp o teléfono.
+          </p>
+        )}
         <p class="help" id="contacto-help">
-          Indica al menos un email o un teléfono para que podamos responderte.
-          Puedes completar ambos.
+          Déjanos un email o teléfono para responderte.
         </p>
         <label for="correo">Email (opcional si indicas teléfono)</label>
         <input
@@ -75,12 +94,15 @@ import { contact } from '../config/site';
           aria-describedby="contacto-help"
           placeholder="+56 9 …"
         />
+        <p class="help">
+          Envío mediante Formspree. No incluyas datos sensibles.
+        </p>
         <button type="submit" class="cta" name="channel" value="email" disabled>
           Enviar consulta por correo
         </button>
       </details>
       <p class="notice" id="contact-notice" role="status" aria-live="polite">
-        WhatsApp abrirá tu consulta para que la revises y la envíes.
+        No se envía nada mientras escribes.
       </p>
       <a
         id="whatsapp-fallback"
@@ -103,6 +125,7 @@ import { contact } from '../config/site';
 <script>
   import { buildWhatsAppUrl, validateContact } from '../lib/contact';
   import { contact } from '../config/site';
+  import { sendContactEmail } from '../lib/email';
 
   const form = document.querySelector<HTMLFormElement>('#contact-form');
   if (form) {
@@ -113,6 +136,10 @@ import { contact } from '../config/site';
     const fallback =
       form.querySelector<HTMLAnchorElement>('#whatsapp-fallback')!;
     const fields = { message, email, phone };
+    let sending = false;
+    const submitButtons = form.querySelectorAll<HTMLButtonElement>(
+      'button[type="submit"]',
+    );
 
     const clearErrors = () => {
       for (const field of Object.values(fields))
@@ -124,6 +151,7 @@ import { contact } from '../config/site';
     };
 
     form.addEventListener('input', () => {
+      if (sending) return;
       clearErrors();
       fallback.hidden = true;
       fallback.removeAttribute('href');
@@ -131,8 +159,9 @@ import { contact } from '../config/site';
         'WhatsApp abrirá tu consulta para que la revises y la envíes.';
     });
 
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('submit', async (event) => {
       event.preventDefault();
+      if (sending) return;
       clearErrors();
       fallback.hidden = true;
       fallback.removeAttribute('href');
@@ -172,8 +201,30 @@ import { contact } from '../config/site';
           'Se solicitó abrir WhatsApp. Revisa tu consulta y pulsa enviar allí; todavía no se ha enviado el mensaje.';
         return;
       }
-      notice.textContent =
-        'Consulta validada. El envío por correo aún no está conectado; no se ha enviado ningún dato.';
+      sending = true;
+      form.setAttribute('aria-busy', 'true');
+      for (const button of submitButtons) button.disabled = true;
+      for (const field of Object.values(fields)) field.readOnly = true;
+      notice.textContent = 'Enviando tu consulta…';
+      try {
+        await sendContactEmail(form.dataset.formId || '', {
+          message: message.value,
+          email: email.value,
+          phone: phone.value,
+        });
+        notice.textContent =
+          'Consulta recibida por el servicio de correo. Conservamos el texto aquí para tu referencia.';
+      } catch (error) {
+        notice.textContent =
+          error instanceof Error
+            ? error.message
+            : 'No pudimos confirmar el envío. Tu consulta sigue aquí.';
+      } finally {
+        sending = false;
+        form.removeAttribute('aria-busy');
+        for (const button of submitButtons) button.disabled = false;
+        for (const field of Object.values(fields)) field.readOnly = false;
+      }
     });
 
     for (const button of form.querySelectorAll<HTMLButtonElement>(

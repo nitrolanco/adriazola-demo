@@ -1,5 +1,7 @@
 ---
 import { contact } from '../config/site';
+import PhotoCarousel from './PhotoCarousel.astro';
+import { heroPhotos } from '../content/work';
 import { buildWhatsAppUrl } from '../lib/contact';
 
 const whatsappUrl = buildWhatsAppUrl(contact.whatsappNumber, {
@@ -12,7 +14,6 @@ const whatsappUrl = buildWhatsAppUrl(contact.whatsappNumber, {
 
 <section class="hero" aria-labelledby="titulo">
   <div>
-    <p class="eyebrow">Particulares y pymes · Aysén</p>
     <h1 id="titulo">
       Soluciones eléctricas para tu hogar <em>y tu negocio.</em>
     </h1>
@@ -34,19 +35,12 @@ const whatsappUrl = buildWhatsAppUrl(contact.whatsappNumber, {
       </a>
     </div>
     <p class="coverage">Atendemos toda la región de Aysén</p>
-    <p class="help">
-      Abre WhatsApp en otra pestaña para revisar y enviar tu mensaje.
-    </p>
+    <p class="help">Abre el chat y conversemos.</p>
   </div>
-  <figure class="hero-photo">
-    <img
-      src={`${import.meta.env.BASE_URL}images/instalacion-solar.jpg`}
-      width="780"
-      height="439"
-      alt="Instalación de paneles solares sobre una cubierta"
-    />
-    <figcaption>
-      Trabajo en terreno · Fotografía del material aportado
-    </figcaption>
-  </figure>
+  <PhotoCarousel
+    photos={heroPhotos}
+    id="hero-fotos"
+    label="Instalaciones destacadas"
+    variant="hero"
+  />
 </section>

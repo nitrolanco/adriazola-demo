@@ -1,0 +1,230 @@
+---
+import type { workPhotos } from '../content/work';
+
+interface Props {
+  photos: typeof workPhotos;
+  id: string;
+  label: string;
+  variant: 'hero' | 'work';
+}
+const { photos, id, label, variant } = Astro.props;
+---
+
+<section
+  class={`carousel carousel-${variant}`}
+  data-carousel
+  data-variant={variant}
+  aria-label={label}
+  aria-roledescription="carrusel"
+>
+  <div
+    class="carousel-track"
+    id={id}
+    tabindex="0"
+    role="group"
+    aria-label="Fotografías. Usa las flechas izquierda y derecha para recorrerlas."
+  >
+    {photos.map((photo, index) => (
+      <figure
+        role="group"
+        aria-roledescription="diapositiva"
+        aria-label={`${index + 1} de ${photos.length}`}
+      >
+        <img
+          src={`${import.meta.env.BASE_URL}images/work/${photo.file}.jpeg`}
+          alt={photo.alt}
+          width={photo.width}
+          height={photo.height}
+          loading={variant === 'hero' && index === 0 ? 'eager' : 'lazy'}
+          draggable="false"
+        />
+        <button
+          class="photo-expand"
+          type="button"
+          aria-label={`Ampliar fotografía: ${photo.alt}`}
+          hidden
+        >
+          <span>Ampliar ↗</span>
+        </button>
+      </figure>
+    ))}
+  </div>
+  <div class="carousel-controls" hidden>
+    <button
+      type="button"
+      data-previous
+      aria-label="Fotos anteriores"
+      aria-controls={id}
+    >
+      ←
+    </button>
+    <span
+      data-position
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    ></span>
+    <button
+      type="button"
+      data-next
+      aria-label="Fotos siguientes"
+      aria-controls={id}
+    >
+      →
+    </button>
+    <button type="button" class="carousel-play" data-play aria-controls={id}>
+      Pausar
+    </button>
+  </div>
+  <dialog class="photo-viewer" aria-label="Fotografía ampliada">
+    <button type="button" class="viewer-close" autofocus>
+      Cerrar ×
+    </button>
+    <img alt="" />
+  </dialog>
+</section>
+
+<script>
+  for (const carousel of document.querySelectorAll<HTMLElement>(
+    '[data-carousel]',
+  )) {
+    const track = carousel.querySelector<HTMLElement>('.carousel-track')!;
+    const slides = [...track.querySelectorAll<HTMLElement>('figure')];
+    const controls = carousel.querySelector<HTMLElement>('.carousel-controls')!;
+    const position = carousel.querySelector<HTMLElement>('[data-position]')!;
+    const play = carousel.querySelector<HTMLButtonElement>('[data-play]')!;
+    const viewer = carousel.querySelector<HTMLDialogElement>('dialog')!;
+    const viewerImage = viewer.querySelector<HTMLImageElement>('img')!;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let playing = !reducedMotion.matches;
+    let visible = false;
+    let hovered = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let current = 0;
+    const render = () => {
+      slides.forEach((slide, index) => {
+        const order = (index - current + slides.length) % slides.length;
+        slide.hidden = order !== 0;
+        slide.style.order = String(order);
+      });
+      position.textContent = `${current + 1} de ${slides.length}`;
+    };
+    const schedule = () => {
+      clearTimeout(timer);
+      position.setAttribute('aria-live', playing ? 'off' : 'polite');
+      play.textContent = playing ? 'Pausar' : 'Reproducir';
+      if (!playing || !visible || hovered || document.hidden || viewer.open)
+        return;
+      timer = setTimeout(() => {
+        current = (current + 1) % slides.length;
+        render();
+        schedule();
+      }, 7000);
+    };
+    const pause = () => {
+      playing = false;
+      schedule();
+    };
+    const move = (direction: number) => {
+      pause();
+      current = (current + direction + slides.length) % slides.length;
+      render();
+    };
+    play.addEventListener('click', () => {
+      playing = !playing;
+      schedule();
+    });
+    carousel.addEventListener('focusin', (event) => {
+      if (
+        event.target !== play &&
+        !carousel.contains(event.relatedTarget as Node | null)
+      )
+        pause();
+    });
+    carousel.addEventListener('pointerenter', (event) => {
+      if (event.pointerType === 'mouse') {
+        hovered = true;
+        schedule();
+      }
+    });
+    carousel.addEventListener('pointerleave', () => {
+      hovered = false;
+      schedule();
+    });
+    document.addEventListener('visibilitychange', schedule);
+    reducedMotion.addEventListener('change', () => {
+      if (reducedMotion.matches) pause();
+    });
+    new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        schedule();
+      },
+      { threshold: 0.25 },
+    ).observe(track);
+    let swiped = false;
+    for (const slide of slides) {
+      const expand = slide.querySelector<HTMLButtonElement>('.photo-expand')!;
+      expand.hidden = false;
+      expand.addEventListener('click', (event) => {
+        if (swiped && event.detail !== 0) return;
+        pause();
+        const photo = slide.querySelector<HTMLImageElement>('img')!;
+        viewerImage.src = photo.currentSrc || photo.src;
+        viewerImage.alt = photo.alt;
+        viewer.showModal();
+        document.documentElement.classList.add('viewer-open');
+      });
+    }
+    viewer
+      .querySelector('button')!
+      .addEventListener('click', () => viewer.close());
+    viewer.addEventListener('click', (event) => {
+      if (event.target === viewer) viewer.close();
+    });
+    viewer.addEventListener('close', () => {
+      document.documentElement.classList.remove('viewer-open');
+      slides[current]
+        .querySelector<HTMLButtonElement>('.photo-expand')!
+        .focus({ preventScroll: true });
+    });
+    carousel
+      .querySelector('[data-previous]')!
+      .addEventListener('click', () => move(-1));
+    carousel
+      .querySelector('[data-next]')!
+      .addEventListener('click', () => move(1));
+    track.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        event.preventDefault();
+        move(event.key === 'ArrowLeft' ? -1 : 1);
+      }
+    });
+    let start: { x: number; y: number } | undefined;
+    track.addEventListener('pointerdown', (event) => {
+      if (!event.isPrimary || event.button !== 0) return;
+      pause();
+      swiped = false;
+      start = { x: event.clientX, y: event.clientY };
+    });
+    track.addEventListener('pointerup', (event) => {
+      if (!start) return;
+      const distance = event.clientX - start.x;
+      if (
+        Math.abs(distance) > 45 &&
+        Math.abs(distance) > Math.abs(event.clientY - start.y)
+      ) {
+        swiped = true;
+        move(distance < 0 ? 1 : -1);
+      }
+      start = undefined;
+    });
+    track.addEventListener('pointercancel', () => {
+      start = undefined;
+    });
+    carousel.classList.add('carousel-ready');
+    render();
+    controls.hidden = false;
+    schedule();
+  }
+</script>

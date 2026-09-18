@@ -76,6 +76,45 @@ botones tienen áreas de pulsación amplias; servicios en tarjetas discretas y
 transiciones CSS cortas, desactivadas cuando se prefiere movimiento reducido.
 Sin librerías, fuentes remotas, carruseles ni JavaScript adicional.
 
+## D009 — Segunda pasada visual y correo
+
+Punto de retorno: commit `8e6b75b`. Se mantienen secciones y orden; se reducen
+tarjetas y sombras, se unifican radios y espaciado y se diferencia el cierre:
+WhatsApp directo y llamadas junto a un panel claro de consulta opcional. Se
+mantienen estados de teclado y transiciones que respetan movimiento reducido.
+
+El usuario elige envío desde la página a su correo provisional. Se prepara
+Formspree mediante fetch nativo y un ID público de build, pendiente de activación
+del proveedor. No hay contraseñas, envíos al escribir ni reintentos automáticos.
+Se conserva el texto, se bloquea doble envío mientras espera y los errores no
+se presentan como éxito. Configuración y aceptación en [EMAIL_SETUP.md](EMAIL_SETUP.md).
+
+## D010 — Fotografías y contenido de presentación
+
+Dos carruseles manuales reutilizan un componente sin dependencias: cuatro fotos
+en la cabecera (solar2, solar4, poste2 y eolico1) y doce en trabajos. La galería
+muestra dos fotos en escritorio y una en móvil, con altura acotada, botones,
+teclado y arrastre horizontal. La navegación vuelve al inicio al llegar al final;
+no hay avance automático. Sin JavaScript queda un listado desplazable horizontal.
+Se conservan las fotografías originales completas, incluidos collages, sin retoques.
+
+Se eliminan avisos visibles de revisión y textos redundantes. Los fallos reales
+de contacto siguen siendo visibles; quitar avisos no equivale a certificar la
+entrega del correo ni a cambiar la política de indexación o publicar el sitio.
+
+## D011 — Carruseles individuales y visor
+
+Reemplaza la presentación de D010: cabecera con texto arriba y fotografías
+debajo; ambos carruseles muestran una sola foto por vez. Rotación cada siete
+segundos únicamente con el carrusel visible y la pestaña activa. Pausa explícita,
+pausa al interactuar y suspensión mientras el ratón está encima. Movimiento
+reducido inicia sin reproducción; el usuario puede activarla expresamente.
+
+Visor con `dialog` nativo, cierre por botón o Escape y retorno del foco. Reutiliza
+el archivo original, sin librerías, recortes, deformaciones ni navegación externa.
+No se amplía la resolución de las fotografías de origen; la nitidez depende de
+ella. El desplazamiento vertical táctil sigue disponible.
+
 ## Referencias técnicas
 
 - [Instalación y requisitos de Astro](https://docs.astro.build/en/install-and-setup/)

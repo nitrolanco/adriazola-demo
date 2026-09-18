@@ -182,3 +182,45 @@ Revisión del servidor local activo mediante navegador: sexto servicio presente,
 tarjetas verificadas visualmente a 1280 px y formulario a 320 px. Ancho del
 documento sin desbordamiento en ambos tamaños. Esto no sustituye las pruebas
 automatizadas de accesibilidad pendientes. Sin publicación ni nuevas dependencias.
+
+## 2026-09-18 — Segunda pasada y envío por correo
+
+Checkpoint anterior confirmado: `8e6b75b`. Lint, formato y Astro check pasan
+(16 archivos, cero errores, advertencias e hints). Vitest vuelve a fallar al
+cargar configuración por `spawn EPERM`: las nuevas pruebas de correo, build y
+E2E todavía no están ejecutadas. Se corrigió un aviso de formato antes de repetir
+la validación; no se omiten comprobaciones.
+
+El navegador conservaba la página anterior; al recargar localhost rechaza la
+conexión. El intento de iniciar desarrollo termina antes de estar listo. Quedan
+pendientes capturas comparativas nuevas, revisión responsive y axe. No atribuir
+a esta pasada los resultados visuales de la anterior.
+
+Formspree se prueba mediante simulaciones, sin solicitudes reales. Pendiente ID,
+verificación del destinatario y recepción real según `EMAIL_SETUP.md`. No se ha
+publicado ni creado un nuevo commit de esta pasada.
+
+## 2026-09-18 — Galerías y simplificación de contenido
+
+Lint y formato pasan. Astro check pasa en 19 archivos, sin errores, advertencias
+ni hints. `validate` se detiene al iniciar Vitest por `spawn EPERM`. Se intentó
+además `test:e2e`: su build se bloquea por `spawn EPERM` al iniciar esbuild;
+Playwright no llega a ejecutarse. No se afirma validación completa.
+
+Se añaden pruebas E2E para recorrer las 16 instancias de fotos, navegación
+circular, teclado, arrastre, tamaños responsive, independencia de carruseles y
+alternativa sin JavaScript. Se actualiza la prueba de imágenes de la home.
+Pendientes de ejecución externa: `npm run validate`, revisión visual y gesto
+táctil en móvil. La pestaña local figura como no accesible durante esta revisión.
+No hubo envíos reales de formularios, commit ni publicación.
+
+### Carrusel individual, reproducción y visor
+
+Tras la siguiente revisión, lint, formato y Astro check pasan (19 archivos,
+cero diagnósticos). Vitest y build vuelven a bloquearse con `spawn EPERM`;
+Playwright no llega a ejecutar pruebas. Se actualizan expectativas a una foto
+por carrusel y se añaden casos para distribución vertical de la cabecera,
+reproducción/pausa, movimiento reducido y apertura/cierre del visor con retorno
+del foco. La revisión visual y táctil sigue pendiente: localhost no está accesible
+desde el navegador disponible. Ejecutar `npm run validate` fuera del entorno
+restringido antes de publicar.

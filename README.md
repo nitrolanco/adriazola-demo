@@ -24,6 +24,7 @@ Abrir http://localhost:3000. Para comprobar la base: npm run validate.
 - [Resultados de validación](docs/VALIDATION.md)
 - [Guía para mostrar esta versión al cliente](docs/CLIENT_REVIEW.md)
 - [Publicar la demo en GitHub Pages](docs/GITHUB_PAGES.md)
+- [Activar y verificar el correo del formulario](docs/EMAIL_SETUP.md)
 
 Validación local confirmada por la salida de PowerShell del usuario el 2026-09-15:
 formato, lint, tipos, 15 pruebas unitarias, build y 14 E2E correctos, incluyendo

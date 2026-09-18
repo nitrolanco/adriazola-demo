@@ -1,31 +1,16 @@
+---
+import PhotoCarousel from './PhotoCarousel.astro';
+import { workPhotos } from '../content/work';
+---
+
 <section class="section" aria-labelledby="trabajos-titulo">
   <div class="section-head">
-    <div>
-      <p class="eyebrow">Experiencia en terreno</p>
-      <h2 id="trabajos-titulo">Una mirada a nuestro trabajo.</h2>
-    </div>
-    <p>Electricidad y energía, desde la instalación hasta el mantenimiento.</p>
+    <h2 id="trabajos-titulo">Nuestro trabajo en terreno.</h2>
   </div>
-  <div class="photos">
-    <figure>
-      <img
-        src={`${import.meta.env.BASE_URL}images/trabajo-electrico.jpg`}
-        width="494"
-        height="347"
-        loading="lazy"
-        alt="Trabajo en un poste eléctrico en un entorno rural"
-      />
-      <figcaption>Instalación eléctrica · Selección provisional</figcaption>
-    </figure>
-    <figure>
-      <img
-        src={`${import.meta.env.BASE_URL}images/aerogenerador.jpg`}
-        width="250"
-        height="442"
-        loading="lazy"
-        alt="Aerogenerador instalado al aire libre"
-      />
-      <figcaption>Energía eólica · Selección provisional</figcaption>
-    </figure>
-  </div>
+  <PhotoCarousel
+    photos={workPhotos}
+    id="trabajo-fotos"
+    label="Galería de trabajos"
+    variant="work"
+  />
 </section>
