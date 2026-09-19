@@ -1,30 +1,35 @@
 import { validateContact, type ContactData } from './contact';
 
+export const contactFormName = 'adriazola-contacto';
+
 export async function sendContactEmail(
-  formId: string,
+  enabled: boolean,
   data: ContactData,
+  botField = '',
 ): Promise<void> {
-  if (!/^[a-z0-9]+$/i.test(formId)) {
+  if (!enabled) {
     throw new Error(
       'El correo no está disponible. Puedes contactarnos por WhatsApp o teléfono; no se ha enviado ningún dato.',
     );
   }
   const validation = validateContact(data, 'email');
   if (validation) throw new Error(validation.message);
-  const body = {
+  const body = new URLSearchParams({
+    'form-name': contactFormName,
+    'bot-field': botField,
     message: data.message.trim(),
     ...(data.email.trim() ? { email: data.email.trim() } : {}),
     ...(data.phone.trim() ? { phone: data.phone.trim() } : {}),
-  };
+  });
   let response: Response;
   try {
-    response = await fetch(`https://formspree.io/f/${formId}`, {
+    response = await fetch('/', {
       method: 'POST',
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: JSON.stringify(body),
+      body: body.toString(),
+      redirect: 'error',
       signal: AbortSignal.timeout(15000),
       credentials: 'omit',
     });

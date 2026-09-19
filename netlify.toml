@@ -1,0 +1,24 @@
+[build]
+  command = "npm run build:netlify"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "24.19.0"
+  ASTRO_TELEMETRY_DISABLED = "1"
+  SITE_URL = "https://adriazolaelectricidad.cl/"
+  SITE_BASE_PATH = "/"
+  PUBLIC_NETLIFY_FORMS = "true"
+
+[context.deploy-preview.environment]
+  PUBLIC_SITE_INDEXABLE = "false"
+
+[context.branch-deploy.environment]
+  PUBLIC_SITE_INDEXABLE = "false"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"

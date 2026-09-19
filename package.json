@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "build:netlify": "npm run build && node scripts/prepare-deploy.mjs",
     "preview": "astro preview",
     "lint": "eslint . --max-warnings 0",
     "format": "prettier . --write",

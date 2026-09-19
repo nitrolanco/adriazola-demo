@@ -115,6 +115,18 @@ el archivo original, sin librerías, recortes, deformaciones ni navegación exte
 No se amplía la resolución de las fotografías de origen; la nitidez depende de
 ella. El desplazamiento vertical táctil sigue disponible.
 
+## D012 — Netlify Forms reemplaza Formspree
+
+Se migra por el requisito de notificar a dos buzones sin añadir servidor ni SDK.
+Una sola petición POST al mismo origen, URL-encoded y con nombre de formulario
+estable. El HTML estático declara los campos para detección durante el deploy.
+Se añade honeypot, conservando timeout, errores y bloqueo de envíos simultáneos.
+Los destinatarios se configuran en el panel, nunca en campos controlados por el
+visitante. Se desactiva correo en builds fuera de Netlify mediante bandera pública;
+esto es configuración de interfaz, no un control de seguridad del backend.
+Detección, dos notificaciones y entrega real pendientes según `EMAIL_SETUP.md`.
+Esta decisión reemplaza la integración de correo descrita en D009.
+
 ## Referencias técnicas
 
 - [Instalación y requisitos de Astro](https://docs.astro.build/en/install-and-setup/)

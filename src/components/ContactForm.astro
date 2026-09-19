@@ -1,5 +1,6 @@
 ---
 import { contact } from '../config/site';
+import { contactFormName } from '../lib/email';
 import { buildWhatsAppUrl } from '../lib/contact';
 
 const directWhatsApp = buildWhatsAppUrl(contact.whatsappNumber, {
@@ -35,13 +36,35 @@ const directWhatsApp = buildWhatsAppUrl(contact.whatsappNumber, {
         </a>
         <span class="help">Solo llamadas.</span>
       </p>
+      <p class="email-contact">
+        Correo electrónico
+        <br />
+        <a href={`mailto:${contact.emailRecipient}`}>
+          {contact.emailRecipient}
+        </a>
+      </p>
     </div>
     <form
       id="contact-form"
       aria-labelledby="consulta-titulo"
-      data-form-id={contact.formspreeFormId}
+      name={contactFormName}
+      method="POST"
+      action="/"
+      data-netlify="true"
+      netlify-honeypot="bot-field"
+      data-email-enabled={String(contact.netlifyFormsEnabled)}
       novalidate
     >
+      <input type="hidden" name="form-name" value={contactFormName} />
+      <div hidden>
+        <label for="bot-field">Deja este campo vacío</label>
+        <input
+          id="bot-field"
+          name="bot-field"
+          tabindex="-1"
+          autocomplete="off"
+        />
+      </div>
       <h3 id="consulta-titulo">Prepara tu consulta</h3>
       <p class="form-intro">Por WhatsApp o correo, tú eliges.</p>
       <label for="consulta">Tu consulta</label>
@@ -67,7 +90,7 @@ const directWhatsApp = buildWhatsAppUrl(contact.whatsappNumber, {
       </button>
       <details>
         <summary>Prefiero enviar por correo</summary>
-        {!contact.formspreeFormId && (
+        {!contact.netlifyFormsEnabled && (
           <p class="help">
             Correo no disponible. Contáctanos por WhatsApp o teléfono.
           </p>
@@ -95,7 +118,9 @@ const directWhatsApp = buildWhatsAppUrl(contact.whatsappNumber, {
           placeholder="+56 9 …"
         />
         <p class="help">
-          Envío mediante Formspree. No incluyas datos sensibles.
+          Usaremos tus datos para responder tu consulta. El envío se procesa
+          mediante Netlify Forms y lo recibe Adriazola Electricidad, con copia a
+          su colaborador de soporte. No incluyas datos sensibles.
         </p>
         <button type="submit" class="cta" name="channel" value="email" disabled>
           Enviar consulta por correo
@@ -207,11 +232,15 @@ const directWhatsApp = buildWhatsAppUrl(contact.whatsappNumber, {
       for (const field of Object.values(fields)) field.readOnly = true;
       notice.textContent = 'Enviando tu consulta…';
       try {
-        await sendContactEmail(form.dataset.formId || '', {
-          message: message.value,
-          email: email.value,
-          phone: phone.value,
-        });
+        await sendContactEmail(
+          form.dataset.emailEnabled === 'true',
+          {
+            message: message.value,
+            email: email.value,
+            phone: phone.value,
+          },
+          form.querySelector<HTMLInputElement>('#bot-field')!.value,
+        );
         notice.textContent =
           'Consulta recibida por el servicio de correo. Conservamos el texto aquí para tu referencia.';
       } catch (error) {

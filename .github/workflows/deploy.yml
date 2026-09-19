@@ -36,7 +36,7 @@ jobs:
           ASTRO_TELEMETRY_DISABLED: '1'
           SITE_URL: ${{ steps.pages.outputs.origin }}
           SITE_BASE_PATH: ${{ steps.pages.outputs.base_path }}/
-          PUBLIC_FORMSPREE_FORM_ID: ${{ vars.PUBLIC_FORMSPREE_FORM_ID }}
+          PUBLIC_NETLIFY_FORMS: 'false'
       - name: Exclude obsolete prototype from deployment
         run: rm -rf -- dist/propuesta
       - uses: actions/upload-pages-artifact@v4

@@ -1,50 +1,62 @@
-# Activación del correo
+# Correo con Netlify Forms
 
 ## Estado
 
-Integración preparada para Formspree, sin SDK, servidor propio ni credenciales
-privadas en el navegador. El usuario proporcionó el formulario `xnpnnwrp`,
-configurado en `.env` local. Falta confirmar el destinatario verificado y probar
-recepción real; la variable de GitHub todavía debe configurarse.
-Sin `PUBLIC_FORMSPREE_FORM_ID`, la página avisa que el correo no está activo
-y nunca presenta éxito ni envía datos. WhatsApp y llamadas siguen disponibles.
+Se reemplaza Formspree por Netlify Forms, sin SDK ni servidor propio.
+Formulario: `adriazola-contacto`. Destinos aprobados:
+`adriazolaelectricidad@gmail.com` y copia temporal a `reddataspa@gmail.com`.
+Las notificaciones NO se configuran en el navegador: falta activarlas en Netlify.
+El mailto público abre el correo del cliente y no incorpora automáticamente copia.
 
-## Configurar
+## Activación en Netlify
 
-1. Crear un formulario en Formspree, con notificaciones a `reddataspa@gmail.com`,
-   y completar la verificación que solicite. No basta con cambiar el email en
-   `src/config/site.ts`: el destinatario efectivo se configura en Formspree.
-2. Obtener el identificador público de `https://formspree.io/f/IDENTIFICADOR`.
-3. Copiar `.env.example` a `.env` y completar `PUBLIC_FORMSPREE_FORM_ID` con solo
-   ese identificador. Reiniciar desarrollo. No introducir tokens de cuenta.
-4. En GitHub → Settings → Secrets and variables → Actions → Variables, crear
-   una variable de repositorio con el mismo nombre y valor. El workflow la pasa
-   al build. Una modificación requiere reconstruir y desplegar; no es dinámica.
-5. Configurar protección antispam y dominios permitidos en el proveedor según las
-   opciones del plan. No hacer obligatorio el email si se acepta solo teléfono.
-   La validación del navegador no sustituye validación y protección del servicio.
-6. Revisar límites y tratamiento/retención de datos del proveedor antes de activar
-   públicamente. El aviso del formulario informa que se procesa vía Formspree.
+1. En el proyecto, abrir Forms y activar **Enable form detection** antes del
+   despliegue que incluye el formulario. Netlify necesita analizar el HTML final.
+2. Desplegar con `npm run build:netlify`. El HTML contiene name, method POST,
+   data-netlify, form-name y el honeypot bot-field, además de los campos visibles.
+3. Confirmar que Forms muestra `adriazola-contacto`.
+4. En Forms → Submission notifications, añadir una notificación de email para
+   cada destinatario, limitada a este formulario. Completar verificaciones si
+   el panel las solicita. No poner emails receptores en campos ocultos.
+5. Enviar, con autorización, una consulta con email y otra solo con teléfono.
+   Comprobar que cada una aparece una sola vez en Forms y llega a ambas bandejas,
+   incluyendo spam. Un HTTP exitoso no garantiza entrega a los buzones.
+6. Revisar filtros antispam y cuotas del plan. El honeypot es un filtro básico,
+   no autenticación ni protección DDoS. No se añade CAPTCHA inicialmente.
 
-## Aceptación antes de darlo por operativo
+## Local, demo y pruebas
 
-- Enviar una consulta autorizada con email y otra solo con teléfono.
-- Verificar ambas en Formspree y en la bandeja del destinatario, incluyendo spam.
-- Si el proveedor exige CAPTCHA, completar su integración antes de publicar;
-  no desactivar controles por defecto para ocultar un error de envío.
-- Confirmar errores de red, rechazo y límite de envíos sin perder el texto.
-- La interfaz confirma aceptación del servicio, no entrega garantizada al buzón.
-- Para migrar al cliente, cambiar/verificar el destinatario en Formspree y
-  actualizar la referencia `emailRecipient`; repetir la comprobación real.
+`PUBLIC_NETLIFY_FORMS=true` se configura en netlify.toml. Sin esa variable,
+el cliente no hace solicitudes de correo ni anuncia éxito; WhatsApp, llamadas
+y mailto siguen disponibles. GitHub Pages fuerza false: no ofrece Netlify Forms.
+Astro preview tampoco implementa el servicio; habilitar la variable localmente
+no lo convierte en un receptor de correo.
 
-## Pruebas
+La petición usa POST al mismo origen, en `/`, codificada como
+application/x-www-form-urlencoded. Incluye form-name y bot-field. Conserva
+timeout, bloqueo de doble clic, errores 429/red y texto de la consulta.
+El endpoint requiere el sitio servido por Netlify en raíz, como configura el proyecto.
 
-Vitest simula fetch. Los E2E inyectan un ID de prueba en el atributo público del
-formulario e interceptan todas las solicitudes a Formspree y WhatsApp. Nunca
-validan recepción real ni consumen envíos del proveedor. No publicar un ID ficticio
-para hacer pasar la activación; las pruebas no requieren esa configuración.
+Vitest simula fetch. Playwright intercepta los POST locales y WhatsApp, activando
+solo en el DOM la bandera de prueba. No hay envíos a buzones reales ni cuotas consumidas.
+Sin JavaScript quedan disponibles los enlaces directos; los botones del formulario
+permanecen desactivados para evitar eludir la validación email-o-teléfono.
+
+## Retirada de Formspree
+
+El código ya no utiliza `PUBLIC_FORMSPREE_FORM_ID`. Se puede eliminar esa variable
+de .env, GitHub y Netlify; el valor antiguo es inocuo y se ignora.
+No cerrar el formulario anterior hasta validar la migración y decidir qué hacer
+con las consultas históricas. No se borraron datos ni se modificó la cuenta externa.
 
 ## Referencias
 
-- [Formspree y JavaScript](https://help.formspree.io/articles/building-your-form/submit-forms-with-javascript-ajax)
-- [Campos especiales](https://help.formspree.io/articles/building-your-form/special-fields)
+Validación de la migración (2026-09-18): lint, formato y Astro check pasan
+(23 archivos). Vitest y build:netlify se bloquean por spawn EPERM del entorno;
+las pruebas actualizadas aún requieren ejecución externa. Sin envío real,
+publicación ni configuración remota de notificaciones durante esta migración.
+
+- [Detección y envío AJAX](https://docs.netlify.com/manage/forms/setup/)
+- [Notificaciones](https://docs.netlify.com/manage/forms/notifications/)
+- [Antispam](https://docs.netlify.com/manage/forms/spam-filters/)
+- [Uso y facturación](https://docs.netlify.com/manage/forms/usage-and-billing/)

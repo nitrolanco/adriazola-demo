@@ -101,6 +101,34 @@ test('visor accesible sin navegación y respeto por movimiento reducido', async 
   await expect(viewer).toBeHidden();
 });
 
+test('controles sobre la foto legibles y separados a 320 px', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 320, height: 740 });
+  await page.goto('./');
+  for (const carousel of await page.locator('[data-carousel]').all()) {
+    const play = carousel.locator('[data-play]');
+    await expect(play).toBeVisible();
+    const bounds = (await play.boundingBox())!;
+    const track = (await carousel.locator('.carousel-track').boundingBox())!;
+    const expand = (await carousel
+      .locator('figure:visible .photo-expand span')
+      .boundingBox())!;
+    expect(bounds.height).toBeGreaterThanOrEqual(44);
+    expect(bounds.width).toBeGreaterThanOrEqual(44);
+    expect(bounds.y).toBeGreaterThanOrEqual(track.y);
+    expect(bounds.y + bounds.height).toBeLessThanOrEqual(
+      track.y + track.height,
+    );
+    expect(bounds.x + bounds.width).toBeLessThanOrEqual(expand.x);
+    await play.click();
+    await expect(play).toHaveText('Pausar');
+    await play.click();
+    await expect(play).toHaveText('Reproducir');
+  }
+});
+
 test('reproducción lenta con pausa explícita', async ({ page }) => {
   await page.clock.install();
   await page.emulateMedia({ reducedMotion: 'no-preference' });

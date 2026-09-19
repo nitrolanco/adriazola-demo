@@ -9,17 +9,22 @@ test('correo envía solo teléfono y bloquea envíos duplicados mientras espera'
     release = resolve;
   });
   let submissions = 0;
-  await page.context().route('https://formspree.io/**', async (route) => {
+  await page.context().route('**/', async (route) => {
+    if (route.request().method() !== 'POST') return route.fallback();
     submissions += 1;
-    expect(route.request().postDataJSON()).toEqual({
+    expect(
+      Object.fromEntries(new URLSearchParams(route.request().postData()!)),
+    ).toEqual({
+      'form-name': 'adriazola-contacto',
+      'bot-field': '',
       message: 'Consulta de prueba',
       phone: '+56 9 1234 5678',
     });
     await pending;
     await route.fulfill({
       status: 200,
-      contentType: 'application/json',
-      body: '{"ok":true}',
+      contentType: 'text/html',
+      body: 'OK',
     });
   });
   await page
@@ -57,16 +62,17 @@ test.beforeEach(async ({ page }) => {
       body: '<title>WhatsApp interceptado para pruebas</title>',
     }),
   );
-  await page.context().route('https://formspree.io/**', (route) =>
-    route.fulfill({
+  await page.context().route('**/', (route) => {
+    if (route.request().method() !== 'POST') return route.fallback();
+    return route.fulfill({
       status: 200,
-      contentType: 'application/json',
-      body: '{"ok":true}',
-    }),
-  );
+      contentType: 'text/html',
+      body: 'OK',
+    });
+  });
   await page.goto('./');
   await page.locator('#contact-form').evaluate((form) => {
-    (form as HTMLFormElement).dataset.formId = 'testform';
+    (form as HTMLFormElement).dataset.emailEnabled = 'true';
   });
   await page.getByRole('link', { name: 'Contacto', exact: true }).click();
   await expect(page).toHaveURL(/#contacto$/);
@@ -175,8 +181,12 @@ test('consulta vacía muestra error accesible y no envía solicitudes', async ({
 test('correo no configurado no afirma que se haya enviado', async ({
   page,
 }) => {
+  const submissions: string[] = [];
+  page.on('request', (request) => {
+    if (request.method() === 'POST') submissions.push(request.url());
+  });
   await page.locator('#contact-form').evaluate((form) => {
-    (form as HTMLFormElement).dataset.formId = '';
+    (form as HTMLFormElement).dataset.emailEnabled = 'false';
   });
   await page
     .getByLabel('Tu consulta', { exact: true })
@@ -191,16 +201,40 @@ test('correo no configurado no afirma que se haya enviado', async ({
   await expect(page.getByRole('form').getByRole('status')).toContainText(
     'no se ha enviado ningún dato',
   );
+  expect(submissions).toEqual([]);
+});
+
+test('el HTML estático declara el formulario y campos para Netlify', async ({
+  browser,
+  baseURL,
+}) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto(baseURL!);
+  const form = page.locator('form[name="adriazola-contacto"]');
+  await expect(form).toHaveAttribute('method', 'POST');
+  await expect(form).toHaveAttribute('data-netlify', 'true');
+  await expect(form).toHaveAttribute('netlify-honeypot', 'bot-field');
+  await expect(form.locator('[name="form-name"]')).toHaveValue(
+    'adriazola-contacto',
+  );
+  await expect(form.locator('[name="bot-field"]')).toBeHidden();
+  for (const name of ['email', 'phone', 'message']) {
+    await expect(form.locator(`[name="${name}"]`)).toHaveCount(1);
+  }
+  await expect(
+    form.getByRole('button', { name: 'Continuar en WhatsApp' }),
+  ).toBeDisabled();
+  await context.close();
 });
 
 test('un fallo de correo conserva la consulta y permite usar WhatsApp', async ({
   page,
 }) => {
-  await page
-    .context()
-    .route('https://formspree.io/**', (route) =>
-      route.fulfill({ status: 429, body: '{}' }),
-    );
+  await page.context().route('**/', (route) => {
+    if (route.request().method() !== 'POST') return route.fallback();
+    return route.fulfill({ status: 429, body: '' });
+  });
   await page
     .getByLabel('Tu consulta', { exact: true })
     .fill('Consulta de prueba');
