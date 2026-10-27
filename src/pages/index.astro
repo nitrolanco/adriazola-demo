@@ -11,7 +11,7 @@ import { site } from '../config/site';
   <a class="skip-link" href="#inicio">
     Saltar al contenido
   </a>
-  <header>
+  <header class="site-header">
     <div class="wrap nav">
       <a
         class="brand"
@@ -30,11 +30,13 @@ import { site } from '../config/site';
       </a>
       <nav aria-label="Principal">
         <a href="#servicios">Servicios</a>
-        <a href="#contacto">Contacto</a>
+        <a href="#contacto">
+          Contacto <span aria-hidden="true">↗</span>
+        </a>
       </nav>
     </div>
   </header>
-  <main id="inicio" class="wrap" tabindex="-1">
+  <main id="inicio" tabindex="-1">
     <Hero />
     <Services />
     <Projects />

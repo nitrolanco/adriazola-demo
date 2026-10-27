@@ -36,6 +36,7 @@ const { photos, id, label, variant } = Astro.props;
           width={photo.width}
           height={photo.height}
           loading={variant === 'hero' && index === 0 ? 'eager' : 'lazy'}
+          fetchpriority={variant === 'hero' && index === 0 ? 'high' : 'auto'}
           draggable="false"
         />
         <button

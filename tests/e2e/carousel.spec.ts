@@ -49,9 +49,15 @@ test('galería compacta, arrastre manual y textos sin avisos de revisión', asyn
     await expect(hero.locator('figure:visible')).toHaveCount(1);
     const introBounds = (await page.locator('.hero > div').boundingBox())!;
     const galleryBounds = (await hero.boundingBox())!;
-    expect(galleryBounds.y).toBeGreaterThanOrEqual(
-      introBounds.y + introBounds.height,
-    );
+    if (width < 960) {
+      expect(galleryBounds.y).toBeGreaterThanOrEqual(
+        introBounds.y + introBounds.height,
+      );
+    } else {
+      expect(galleryBounds.x).toBeGreaterThanOrEqual(
+        introBounds.x + introBounds.width,
+      );
+    }
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,

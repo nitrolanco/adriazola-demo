@@ -1,0 +1,35 @@
+---
+interface Props {
+  name:
+    | 'installation'
+    | 'maintenance'
+    | 'energy'
+    | 'climate'
+    | 'equipment'
+    | 'computing';
+}
+const paths = {
+  installation: 'M18 3 7 18h9l-2 11 11-16h-9l2-10Z',
+  maintenance: 'M12 5H5v22h22V5h-7M12 3h8v5h-8V3ZM10 16l4 4 8-8M10 24h12',
+  energy:
+    'M16 3v3M16 26v3M3 16h3M26 16h3M7 7l2 2M23 23l2 2M25 7l-2 2M9 23l-2 2M22 16a6 6 0 1 1-12 0 6 6 0 0 1 12 0Z',
+  climate: 'M5 10h17a4 4 0 1 0-4-4M3 16h24M5 22h17a4 4 0 1 1-4 4',
+  equipment: 'M5 12h22v16H5V12ZM11 12V5h10v7M5 19h22M13 17v4h6v-4',
+  computing: 'M3 5h26v18H3V5ZM11 29h10M16 23v6M12 10l-4 4 4 4M20 10l4 4-4 4',
+};
+---
+
+<svg
+  class="service-icon"
+  width="36"
+  height="36"
+  viewBox="0 0 32 32"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.4"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+>
+  <path d={paths[Astro.props.name]} />
+</svg>

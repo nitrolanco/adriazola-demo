@@ -1,0 +1,39 @@
+name: Validate Adriazola preview
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      ASTRO_TELEMETRY_DISABLED: '1'
+      PLAYWRIGHT_BROWSERS_PATH: '0'
+      SITE_URL: https://adriazolaelectricidad.cl/
+      SITE_BASE_PATH: /
+      PUBLIC_NETLIFY_FORMS: 'true'
+      PUBLIC_SITE_INDEXABLE: 'false'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run validate
+      - run: npm run build:netlify
+      - name: Verify preview artifact
+        run: |
+          test -f dist/index.html
+          test ! -d dist/propuesta
+          node --input-type=module -e "import {readFileSync} from 'node:fs'; const html = readFileSync('dist/index.html', 'utf8'); if (!html.includes('noindex, nofollow') || !html.includes('adriazola-contacto')) process.exit(1);"
