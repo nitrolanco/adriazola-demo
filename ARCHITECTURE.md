@@ -11,7 +11,7 @@ desde dist. No hay servidor de aplicación, adaptador, framework UI ni API.
 | src/styles        | Paleta en tokens.css, estilos de la landing en landing.css, entrada en global.css |
 | src/config        | Metadatos compartidos en site.ts                                                  |
 | src/lib           | Reglas de validación de contacto independientes del navegador                     |
-| src/content       | Contenido cuando exista; sin colecciones ni esquema anticipado                    |
+| src/content       | Servicios aprobados y catálogo de fotografías, separados de su presentación       |
 | public            | Archivos copiados sin transformar                                                 |
 | tests/unit        | Casos de validación del mensaje y de los contactos por canal                      |
 | tests/e2e         | Contrato observable de la página construida y accesibilidad                       |

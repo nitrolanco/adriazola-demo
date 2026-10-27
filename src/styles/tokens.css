@@ -4,13 +4,12 @@
   --accent: #006a9b;
   --accent-hover: #00527a;
   --accent-soft: #d9f2ff;
-  --paper: #faf9f6;
+  --paper: #fafbf9;
   --surface: #ffffff;
-  --muted: #495970;
-  --line: #d4dde5;
-  --shadow: 0 12px 32px rgb(6 15 84 / 7%);
+  --muted: #536173;
+  --line: #dbe2e7;
   --section-space: clamp(64px, 7vw, 104px);
   --radius: 4px;
-  --focus: var(--brand-cyan);
-  --font-body: Arial, Helvetica, sans-serif;
+  --focus: #007bb5;
+  --font-body: 'Segoe UI', Arial, Helvetica, sans-serif;
 }

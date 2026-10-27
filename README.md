@@ -1,8 +1,13 @@
-# Landing Astro — base local
+# Adriazola Electricidad
 
-Landing local de Adriazola Electricidad. Etapa 5: propuesta visual integrada en
-Astro, con fotos provisionales y validación de contacto. WhatsApp usa un número
-temporal; la recepción del formulario por correo sigue pendiente.
+Renovación visual V2 preparada para revisión el 27 de octubre de 2026. Conserva
+textos aprobados, logo, fotografías y canales de contacto. Ver
+[alcance, validación y publicación de V2](docs/RENOVACION_V2.md).
+
+Aplicación Astro estática con formulario Netlify y contacto por WhatsApp.
+La renovación se revisa en una rama independiente antes de actualizar el sitio
+público. Los documentos de etapas anteriores conservan contexto histórico;
+la guía V2 describe esta entrega.
 
 Con Node 24.19.0 y npm >= 10:
 
@@ -26,7 +31,9 @@ Abrir http://localhost:3000. Para comprobar la base: npm run validate.
 - [Publicar la demo en GitHub Pages](docs/GITHUB_PAGES.md)
 - [Activar y verificar el correo del formulario](docs/EMAIL_SETUP.md)
 
-Validación local confirmada por la salida de PowerShell del usuario el 2026-09-15:
-formato, lint, tipos, 15 pruebas unitarias, build y 14 E2E correctos, incluyendo
-WhatsApp. La subruta de GitHub Pages y el despliegue remoto siguen pendientes de
-validación en Actions. Ver el registro de validación para evidencia y limitaciones.
+Validación V2: formato, lint, tipos, 33 pruebas unitarias, 36 pruebas de navegador
+y compilación Netlify correctos. Capturas revisadas en móvil, tablet y escritorio;
+39 bloques de texto y 16 archivos de marca/fotografías conservados. Los envíos se
+interceptaron en las pruebas; no se comprobó recepción de correo real. La rama y
+el despliegue de retorno de producción requieren verificación en Netlify antes
+de publicar.

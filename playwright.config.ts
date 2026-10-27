@@ -25,6 +25,8 @@ export default defineConfig({
   ],
   webServer: {
     command: `npm run preview -- --host 127.0.0.1 --port ${port}`,
+    // Playwright owns the server lifetime, including when invoked by an agent.
+    env: { ASTRO_PREVIEW_BACKGROUND: '1', ASTRO_TELEMETRY_DISABLED: '1' },
     url: baseURL,
     reuseExistingServer: false,
     timeout: 30_000,
