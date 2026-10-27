@@ -6,7 +6,7 @@ import process from 'node:process';
 process.env.PLAYWRIGHT_BROWSERS_PATH = '0';
 const { chromium } = await import('@playwright/test');
 const url = process.argv[2] || 'http://127.0.0.1:4323/';
-const output = resolve('playwright-report/review');
+const output = resolve(process.argv[3] || 'playwright-report/review');
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch();
 const context = await browser.newContext({ reducedMotion: 'reduce' });
@@ -62,7 +62,7 @@ try {
     resolve('playwright-report/baseline/index.html'),
     'utf8',
   );
-  const current = await readFile(resolve('dist/index.html'), 'utf8');
+  const current = await response.text();
   const content = await page.evaluate(
     ({ baseline, current }) => {
       const extract = (html) =>

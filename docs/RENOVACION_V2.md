@@ -82,3 +82,16 @@ auditoría completa con tecnologías de asistencia.
 El workflow `validate-pr.yml` valida el PR y su artefacto; no publica el sitio.
 La configuración Netlify original y el workflow existente de GitHub Pages no
 se modifican en esta renovación.
+
+## Vista alojada para revisión
+
+Al abrir el [PR de revisión](https://github.com/nitrolanco/adriazola-demo/pull/1),
+la integración existente de Netlify generó automáticamente esta vista separada:
+
+https://deploy-preview-1--adriazolaelectricidad.netlify.app/
+
+El primer despliegue de revisión es `6ae0fa5b4e91a919f745d6a1`, asociado a
+`88e5c39`. Es un Deploy Preview, no un despliegue de retorno de producción.
+La comprobación posterior confirmó HTTP 200 y el mismo contenido y ETag en el
+dominio público que al comenzar. La rama exacta de producción sigue requiriendo
+verificación en la cuenta Netlify antes de fusionar o publicar.
